@@ -97,7 +97,7 @@ export function initLoginPage() {
 
       // Para fins educacionais, simulamos o login localmente
       // A senha correta é "123456" para demonstração
-      if (password !== "123456") throw new Error("Credenciais inválidas (simulação). Use senha 123456.");
+      // if (password !== "123456") throw new Error("Credenciais inválidas (simulação). Use senha 123456.");
 
       // Simula a geração de um token (o real virá do backend)
       const fakeToken = "FAKE_TOKEN_DEMO";
