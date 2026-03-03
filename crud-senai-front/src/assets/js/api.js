@@ -39,8 +39,7 @@ export async function apiRequest(path, { method = "GET", body, auth = true } = {
     body: body ? JSON.stringify(body) : undefined  // Converte objeto para string JSON
   });
 
-  // Tenta converter a resposta para JSON, ou retorna vazio se falhar
-  const data = await res.json().catch(() => ({}));
+  const data = await response.json().catch(() => ({}));
 
   // Se a resposta teve erro (status não está entre 200-299)
   if (!res.ok) {

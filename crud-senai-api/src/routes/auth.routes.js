@@ -5,7 +5,7 @@ import rateLimit from "express-rate-limit";
 // Importa o schema de validação do formulário de login (usada com Zod para validar dados) 
 import { loginSchema } from "../validators/auth.validators.js"; 
 // Importa a função de serviço que executa a lógica de login com proteção de tentativas (lock) 
-import { loginWithLock } from "../service/auth.service.js"; 
+import { loginWithLock } from "../services/auth.service.js"; 
 import { requireAuth } from "../middlewares/auth.middleware.js";
 // Cria uma nova instância de router para definir as rotas de autenticação 
 const router = Router(); 
