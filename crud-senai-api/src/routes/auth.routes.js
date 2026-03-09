@@ -7,6 +7,9 @@ import { loginSchema } from "../validators/auth.validators.js";
 // Importa a função de serviço que executa a lógica de login com proteção de tentativas (lock) 
 import { loginWithLock } from "../services/auth.service.js"; 
 import { requireAuth } from "../middlewares/auth.middleware.js";
+import { forgotPasswordSchema, resetPasswordSchema } from "../validators/password-reset.validators.js"; 
+import { requestPasswordReset, resetPassword } from "../services/password-reset.service.js"; 
+
 // Cria uma nova instância de router para definir as rotas de autenticação 
 const router = Router(); 
 // Configura um middleware limitador de taxa (rate limiter) para proteger contra força bruta 
@@ -54,6 +57,50 @@ router.get("/me",requireAuth,async(req, res) =>{
         ok:true,
         auth: req.auth
     })
+});
+router.post("/forgot-password", async (req, res, next) => { 
+  try { 
+    const parsed = forgotPasswordSchema.safeParse(req.body); 
+ 
+    if (!parsed.success) { 
+      return res.status(400).json({ 
+        message: "Dados inválidos.", 
+        details: parsed.error.issues.map(i => ({ 
+          field: i.path.join("."), 
+          message: i.message 
+        })) 
+      }); 
+    } 
+ 
+    const result = await requestPasswordReset(parsed.data.email); 
+ 
+    return res.status(result.statusCode).json(result.data); 
+  } catch (err) { 
+    next(err); 
+  } 
+});
+router.post("/reset-password", async (req, res, next) => { 
+  try { 
+    const parsed = resetPasswordSchema.safeParse(req.body); 
+ 
+    if (!parsed.success) { 
+      return res.status(400).json({ 
+        message: "Dados inválidos.", 
+        details: parsed.error.issues.map(i => ({ 
+field: i.path.join("."), 
+message: i.message 
+})) 
+}); 
+} 
+const result = await resetPassword(parsed.data.token, 
+parsed.data.newPassword); 
+if (!result.ok) { 
+return res.status(result.statusCode).json({ message: result.message }); 
+} 
+return res.status(result.statusCode).json(result.data); 
+} catch (err) { 
+next(err); 
+} 
 });
 // Exporta o router como padrão (default export) para ser usado em outros arquivos 
 // OBRIGATÓRIO para que as rotas sejam acessíveis fora deste módulo 

@@ -8,6 +8,8 @@ import cors from "cors";
 import rateLimit from "express-rate-limit"; 
 // Importa as rotas de autenticação definidas no arquivo auth.routes.js 
 import authRoutes from "./routes/auth.routes.js"; 
+
+import usersRoutes from "./routes/users.routes.js"; 
 // Cria e exporta a aplicação Express 
 // Exporta como named export para ser usada em outros arquivos (como server.js) 
 export const app = express(); 
@@ -49,6 +51,8 @@ limit: 300
 // Registra as rotas de autenticação sob o prefixo "/api/auth" 
 // Exemplo: POST /api/auth/login executará a rota definida em authRoutes 
 app.use("/api/auth", authRoutes); 
+
+app.use("/api/users", usersRoutes); 
 // ============================================ 
 // ENDPOINT DE HEALTH CHECK 
 // ============================================ 
