@@ -54,21 +54,29 @@ export function initLoginPage() {
         }
     });
 
-    forgotBtn.addEventListener("click", async () => { 
-hideAlert(alertEl); 
-const email = emailEl.value.trim().toLowerCase(); 
-if (!validateEmail(email)) { 
-return showAlert(alertEl, "warn", "Para redefinir, informe um e-mail válido no campo e-mail."); 
-} 
-try { 
-const data = await apiRequest("/api/auth/forgot-password", { 
-method: "POST", 
-body: { email }, 
-auth: false 
-}); 
-// Em ambiente didático, exibimos o token no alerta para teste. 
-const tokenInfo = data.token ? ` Token: ${data.token}` : ""; 
-showAlert(alertEl, "ok", `${data.message}${tokenInfo}`); 
+ forgotBtn.addEventListener("click", async () => { 
+  hideAlert(alertEl); 
+ 
+  const email = emailEl.value.trim().toLowerCase(); 
+ 
+  if (!validateEmail(email)) { 
+    return showAlert(alertEl, "warn", "Para redefinir, informe um e-mail válido no campo e-mail."); 
+  } 
+ 
+  try { 
+    const data = await apiRequest("/api/auth/forgot-password", { 
+      method: "POST", 
+      body: { email }, 
+      auth: false 
+    }); 
+ 
+    const tokenInfo = data.token ? ` Token: ${data.token}` : ""; 
+    showAlert( 
+      alertEl, 
+      "ok", 
+`${data.message}${tokenInfo} Abra a página de redefinição para cadastrar a 
+nova senha.` 
+); 
 } catch (err) { 
 console.log("DEBUG ERRO FORGOT PASSWORD:", err.message, err.status, 
 err.data); 
