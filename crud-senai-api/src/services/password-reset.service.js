@@ -1,7 +1,8 @@
 import crypto from "crypto"; 
 import bcrypt from "bcrypt"; 
 import { pool } from "../db.js"; 
- 
+import { sendPasswordResetEmail } from "./mail.service.js"; 
+
 /** 
  * Gera um token aleatório e retorna: 
  * - token em texto puro (para teste didático) 
@@ -30,7 +31,7 @@ export async function requestPasswordReset(email) {
       ok: true, 
       statusCode: 200, 
       data: { 
-        message: "Se este e-mail existir, um token de redefinição foi gerado." 
+        message: "Se este e-mail existir, você receberá um e-mail com instruções para redefinir a senha." 
       } 
     }; 
   } 
@@ -48,14 +49,21 @@ export async function requestPasswordReset(email) {
     [user.id, token_hash, expiresAt] 
   ); 
  
-  return { 
-    ok: true, 
-    statusCode: 200, 
-    data: { 
-      message: "Se este e-mail existir, um token de redefinição foi gerado.", 
-      token // apenas para ambiente didático / testes 
-    } 
-  }; 
+await sendPasswordResetEmail(user.email, token);
+  // ajusta a resposta para incluir o token em desenvolvimento (facilita testes)
+  const responseData = {
+    message: "Se este e-mail existir, você receberá um e-mail com instruções para redefinir a senha."
+  };
+  if (process.env.NODE_ENV === "development") {
+    // retornar o token para que o front-end possa exibi‑lo ou copiar
+    responseData.token = token;
+  }
+
+  return {
+    ok: true,
+    statusCode: 200,
+    data: responseData
+  };
 } 
  
 /** 

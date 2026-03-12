@@ -69,14 +69,20 @@ export function initLoginPage() {
       body: { email }, 
       auth: false 
     }); 
+
+    console.log("data: ",data);
  
-    const tokenInfo = data.token ? ` Token: ${data.token}` : ""; 
-    showAlert( 
-      alertEl, 
-      "ok", 
-`${data.message}${tokenInfo} Abra a página de redefinição para cadastrar a 
-nova senha.` 
-); 
+    const tokenInfo = data.token ? ` Token: ${data.token}` : "";
+    showAlert(
+      alertEl,
+      "ok",
+      `${data.message}${tokenInfo}`
+    );
+
+    // opcional: redirecionar para a página de redefinição
+    setTimeout(() => {
+      window.location.href = "./reset-password.html";
+    }, 800);
 } catch (err) { 
 console.log("DEBUG ERRO FORGOT PASSWORD:", err.message, err.status, 
 err.data); 
