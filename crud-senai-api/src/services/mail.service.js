@@ -15,8 +15,11 @@ const transporter = nodemailer.createTransport({
 });
 
 // opcional: verificar configuração ao iniciar (não bloqueia o app)
-transporter.verify().catch(err => {
-    console.warn("Aviso: falha ao verificar configuração SMTP:", err.message);
+transporter.verify().then(() => {
+    console.log("✅ Configuração SMTP verificada com sucesso");
+}).catch(err => {
+    console.error("❌ ERRO CRÍTICO: Falha ao verificar configuração SMTP:", err.message);
+    console.error("Verifique as credenciais MAIL_USER e MAIL_PASS no arquivo .env");
 });
 /** 
 * Envia e-mail com token de redefinição de senha. 
@@ -42,9 +45,11 @@ Redefinir senha
     };
 
     try {
-        await transporter.sendMail(message);
+        const info = await transporter.sendMail(message);
+        console.log("✅ E-mail de reset enviado com sucesso:", info.messageId);
     } catch (err) {
         // não propaga erro; o processo de reset continua mesmo que o e‑mail falhe
-        console.error("Falha ao enviar e-mail de reset:", err);
+        console.error("❌ ERRO ao enviar e-mail de reset:", err.message);
+        console.error("Detalhes completos:", err);
     }
 }

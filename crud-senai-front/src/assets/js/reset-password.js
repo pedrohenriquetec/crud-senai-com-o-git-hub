@@ -7,7 +7,14 @@ export function initResetPasswordPage() {
   const newPasswordEl = $("#newPassword"); 
   const alertEl = $("#alertReset"); 
  
+  
   hideAlert(alertEl); 
+
+  const params = new URLSearchParams(window.location.search); 
+const tokenFromUrl = params.get("token"); 
+if (tokenFromUrl) { 
+tokenEl.value = tokenFromUrl; 
+} 
  
   form.addEventListener("submit", async (e) => { 
     e.preventDefault(); 
